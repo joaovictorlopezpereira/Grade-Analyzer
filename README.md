@@ -1,7 +1,7 @@
 # Grade-Analyzer
 ## Abstract
 
-Often, people only receive our grades and final scores. This tool offers a simple solution by generating key metrics about the user's grades and providing visual plots to enhance understanding and analysis.
+Often, people only receive their grades and final scores. This tool offers a simple solution by generating key metrics about the user's grades and providing visual plots to enhance understanding and analysis.
 
 By adding the user's information in a ``.jl`` file, just like ``random_data.jl`` shown in the ``example`` folder, a simple command like ``julia grade-analyzer.jl user_data.jl`` will allow ``Julia`` to automatically generate all the plots and metrics, as demonstrated in the ``example`` folder.
 
