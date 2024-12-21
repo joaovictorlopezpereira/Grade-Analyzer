@@ -108,7 +108,7 @@ function plot_average_grade_by_period!(data; tendency=false, degree=2)
     plot!(poly_reg(n, period_averages, degree))
   end
 
-  savefig("Average grade_by_semester.png")
+  savefig("average grade_by_semester.png")
 end
 
 function import_file_from_arg!(ARGS)
