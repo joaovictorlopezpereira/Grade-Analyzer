@@ -1,0 +1,7 @@
++------------------------------+-----+
+|       Number of disciplines: | 57
+|               Average grade: | 8.44
+|                      Median: | 8.5
+|                        Mode: | 9.0
+| Weighted standard deviation: | 0.79
++------------------------------+-----+
