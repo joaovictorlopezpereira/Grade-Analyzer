@@ -24,4 +24,4 @@ the output in the terminal will be:
 ========================= Done =========================
 ```
 
-following this, the corresponding ``.png`` and ``.txt`` files will be generated and saved in the directory where the ``Julia`` command was executed.
+following this, the corresponding ``.png`` and ``.txt`` files will be generated and saved in the directory ``output`` automatically created in the directory where the ``Julia`` command was executed.
