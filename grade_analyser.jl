@@ -39,7 +39,7 @@ function plot_grades_by_period!(data)
     annotate!(x_pos + 0.05, y_pos, text(label, :left, 10))
   end
 
-  savefig("grades_per_semester.png")
+  savefig("output/grades_per_semester.png")
 end
 
 function plot_grade_distribution!(data; b=100)
@@ -51,11 +51,11 @@ function plot_grade_distribution!(data; b=100)
   end
 
   plt = histogram(all_notes, bins=b, xlabel="Grades", ylabel="Frequency", title="Grades distribution", legend=false, color=:blue)
-  savefig("grades_distribution.png")
+  savefig("output/grades_distribution.png")
 end
 
 function write_in_file_grade_info!(data, output_file)
-  output_file = replace(output_file, r"\.jl$" => "") * ".txt"
+  output_file = "output/" * replace(output_file, r"\.jl$" => "") * ".txt"
 
   all_notes = Float64[]
   all_disciplines = String[]
@@ -108,12 +108,12 @@ function plot_average_grade_by_period!(data; tendency=false, degree=2)
     plot!(poly_reg(n, period_averages, degree))
   end
 
-  savefig("average grade_by_semester.png")
+  savefig("output/average grade_by_semester.png")
 end
 
 function import_file_from_arg!(ARGS)
   if length(ARGS) == 0
-    println("A file name is missing from the call to julia")
+    println("The data file is missing from the function call.")
     exit(1)
   end
 
@@ -150,4 +150,5 @@ function run_all_methods!(data, ARGS; tend=false, deg=2)
 end
 
 import_file_from_arg!(ARGS)
+mkpath("output")
 run_all_methods!(data, ARGS, tend=true, deg=2)
