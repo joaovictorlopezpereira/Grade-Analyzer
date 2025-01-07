@@ -1,30 +1,58 @@
 using Plots
 using LinearAlgebra
+using BenchmarkTools
 include("statistics.jl")
 
+# Asserts that the given file is in the correct format and returns the data
+function assert_and_import_file_from_arg(ARGS)
+  if length(ARGS) == 0
+    println("The data file is missing from the function call.")
+    exit(1)
+  end
+
+  name = endswith(ARGS[1], ".jl") ? ARGS[1] : ARGS[1] * ".jl"
+
+  if isfile(name)
+    return include(name)
+  else
+    println("File '$name' not found.")
+    exit(1)
+  end
+end
+
+# Verifies if any of the given data is missing
+function assert_data(data)
+  for i in eachindex(data)
+    @assert length(data[i]) == 3 "The data on period $i is missing one of the 3 required information (names, grades, weight)."
+
+    @assert length(data[i][1]) == length(data[i][2]) && length(data[i][2]) == length(data[i][3]) "There's data missing on the period $i."
+  end
+end
+
+# Plots the grade by period
 function plot_grades_by_period!(data)
-  plt = plot(size=(800, 800), label="Grades per semester", xlabel="Semester", ylabel="Grades", legend=:topright, xlims=(0.8, length(data)+0.5))
+  plt = plot(size=(800, 800), label="Grades per Period", xlabel="Period", ylabel="Grades", legend=:topright, xlims=(0.8, length(data)+0.5))
 
   x_vals = []
   y_vals = []
   labels = []
 
-  for i in 1:length(data)
+  for i in eachindex(data)
     period_data = data[i]
     disciplines, grades, _ = period_data
 
-    for j in 1:length(disciplines)
+    for j in eachindex(disciplines)
       push!(x_vals, i)
       push!(y_vals, grades[j])
       push!(labels, disciplines[j])
     end
   end
 
-  scatter!(x_vals, y_vals, label="", markersize=6, color=:blue)
+  scatter!(plt, x_vals, y_vals, label="", markersize=6, color=:blue)
 
   occupied_positions = Dict()
 
-  for i in 1:length(labels)
+  for i in eachindex(labels)
     x_pos = x_vals[i]
     y_pos = y_vals[i]
     label = labels[i]
@@ -36,12 +64,13 @@ function plot_grades_by_period!(data)
       occupied_positions[(x_pos, y_pos)] = y_pos
     end
 
-    annotate!(x_pos + 0.05, y_pos, text(label, :left, 10))
+    annotate!(plt, x_pos + 0.125, y_pos, text(label, :left, 10))
   end
 
-  savefig("output/grades_per_semester.png")
+  savefig("output/grades_per_period.png")
 end
 
+# Plots the grade distribution by using a histogram
 function plot_grade_distribution!(data; b=100)
   all_notes = Float64[]
 
@@ -50,12 +79,36 @@ function plot_grade_distribution!(data; b=100)
     append!(all_notes, notes)
   end
 
-  plt = histogram(all_notes, bins=b, xlabel="Grades", ylabel="Frequency", title="Grades distribution", legend=false, color=:blue)
+  histogram(all_notes, bins=b, xlabel="Grades", ylabel="Frequency", title="Grades Distribution", legend=false, color=:blue, size=(800, 800))
   savefig("output/grades_distribution.png")
 end
 
+# Plots the average grade by period
+function plot_average_grade_by_period!(data; tendency=false, degree=2)
+  period_averages = Float64[]
+  n = collect(1:length(data))
+
+  for period_data in data
+    _, notes, weights = period_data
+    push!(period_averages, weighted_mean(notes, weights))
+  end
+
+  plt = scatter(n, period_averages, xlabel="Period", ylabel="Average Grade", title="Average Grade by Period", legend=false, color=:blue)
+
+  for i in 1:length(period_averages)
+    annotate!(plt, n[i], period_averages[i] + 0.05, text("s$i", 10, :center))
+  end
+
+  if tendency
+    plot!(poly_reg(n, period_averages, degree))
+  end
+
+  savefig("output/average grade_by_period.png")
+end
+
+# Writes in a file some statistics
 function write_in_file_grade_info!(data, output_file)
-  output_file = "output/" * replace(output_file, r"\.jl$" => "") * ".txt"
+  output_file = "output/statistics_" * replace(output_file, r"\.jl$" => "") * ".txt"
 
   all_notes = Float64[]
   all_disciplines = String[]
@@ -89,66 +142,37 @@ function write_in_file_grade_info!(data, output_file)
   end
 end
 
-function plot_average_grade_by_period!(data; tendency=false, degree=2)
-  period_averages = Float64[]
-  n = collect(1:length(data))
+# Runs all the methods
+function run_all_methods!(ARGS; tend=false, deg=2)
+  print("\n==================== Grade Analyser ====================\n")
+  print(">>> Importing file from the user input...",)
+  data = assert_and_import_file_from_arg(ARGS)
+  print(" Done!\n")
 
-  for period_data in data
-    disciplines, notes, weights = period_data
-    push!(period_averages, weighted_mean(notes, weights))
+  prints = [
+    ">>> Making sure that the data is in the correct format...",
+    ">>> Setting up the output folder...",
+    ">>> Computing grades by period...",
+    ">>> Computing grade distribution...",
+    ">>> Computing average grade by period...",
+    ">>> Computing grade information..."
+  ]
+  methods = [
+    () -> assert_data(data),
+    () -> mkpath("output"),
+    () -> plot_grades_by_period!(data),
+    () -> plot_grade_distribution!(data),
+    () -> plot_average_grade_by_period!(data, tendency=tend, degree=deg),
+    () -> write_in_file_grade_info!(data, ARGS[1])
+  ]
+
+  for i in eachindex(methods)
+    print(prints[i])
+    methods[i]()
+    print(" Done!\n")
   end
-
-  plt = scatter(n, period_averages, xlabel="Semester", ylabel="Average grade", title="Average grade by semester", legend=false, color=:blue)
-
-  for i in 1:length(period_averages)
-    annotate!(n[i], period_averages[i] + 0.05, text("s$i", 10, :center))
-  end
-
-  if tendency
-    plot!(poly_reg(n, period_averages, degree))
-  end
-
-  savefig("output/average grade_by_semester.png")
-end
-
-function import_file_from_arg!(ARGS)
-  if length(ARGS) == 0
-    println("The data file is missing from the function call.")
-    exit(1)
-  end
-
-  name = ARGS[1]
-
-  if !endswith(name, ".jl")
-    name *= ".jl"
-  end
-
-  if isfile(name)
-    include(name)
-  else
-    println("File '$name' not found.")
-    exit(1)
-  end
-end
-
-function run_all_methods!(data, ARGS; tend=false, deg=2)
-  print("\n==================== Grade Analysis ====================\n")
-
-  print(">>> Running grades by period...\n")
-  plot_grades_by_period!(data)
-
-  print(">>> Running grade distribution...\n")
-  plot_grade_distribution!(data)
-
-  print(">>> Running grade information...\n")
-  write_in_file_grade_info!(data, ARGS[1])
-
-  print(">>> Running average grade by period...\n")
-  plot_average_grade_by_period!(data, tendency=tend, degree=deg)
 
   print("========================= Done =========================\n")
 end
 
-import_file_from_arg!(ARGS)
-mkpath("output")
-run_all_methods!(data, ARGS, tend=true, deg=2)
+run_all_methods!(ARGS, tend=true, deg=4)
