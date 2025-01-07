@@ -3,24 +3,33 @@
 
 Often, people only receive their grades and final scores. This tool offers a simple solution by generating key metrics about the user's grades and providing visual plots to enhance understanding and analysis.
 
-By adding the user's information in a ``.jl`` file, just like ``random_data.jl`` shown in the ``example`` folder, a simple command like ``julia grade-analyzer.jl user_data.jl`` will allow ``Julia`` to automatically generate all the plots and metrics, as demonstrated in the ``example`` folder.
+By adding the user's information in a ``.jl`` file, just like ``example_data.jl``, a simple command like
+
+```bash
+  julia grade-analyzer.jl example_data.jl
+```
+
+allows ``Julia`` to automatically generate all the plots and metrics, as demonstrated in the ``output`` folder.
 
 ## Example Output
 
 After running the command:
 
 ```bash
-julia grade-analyzer.jl user_data.jl
+julia grade-analyzer.jl example_data.jl
 ```
 
 the output in the terminal will be:
 
 ```
-==================== Grade Analysis ====================
->>> Running grades by period...
->>> Running grade distribution...
->>> Running grade information...
->>> Running average grade by period...
+==================== Grade Analyser ====================
+>>> Importing file from the user input... Done!
+>>> Making sure that the data is in the correct format... Done!
+>>> Setting up the output folder... Done!
+>>> Computing grades by period... Done!
+>>> Computing grade distribution... Done!
+>>> Computing average grade by period... Done!
+>>> Computing grade information... Done!
 ========================= Done =========================
 ```
 
