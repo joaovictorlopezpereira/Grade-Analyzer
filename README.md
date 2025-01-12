@@ -6,7 +6,7 @@ Often, people only receive their grades and final scores. This tool offers a sim
 By adding the user's information in a ``.jl`` file, just like ``example_data.jl``, a simple command like
 
 ```bash
-  julia grade-analyzer.jl example_data.jl
+julia grade-analyzer.jl example_data.jl
 ```
 
 allows ``Julia`` to automatically generate all the plots and metrics, as demonstrated in the ``output`` folder.
