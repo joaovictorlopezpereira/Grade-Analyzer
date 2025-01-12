@@ -22,15 +22,15 @@ julia grade-analyzer.jl example_data.jl
 the output in the terminal will be:
 
 ```
-==================== Grade Analyser ====================
->>> Importing file from the user input... Done!
->>> Making sure that the data is in the correct format... Done!
->>> Setting up the output folder... Done!
->>> Computing grades by period... Done!
->>> Computing grade distribution... Done!
->>> Computing average grade by period... Done!
->>> Computing grade information... Done!
-========================= Done =========================
+========================= Grade Analyser =========================
+>>> Importing file from the user input...                  Done!
+>>> Making sure that the data is in the correct format...  Done!
+>>> Setting up the output folder...                        Done!
+>>> Computing grades by period...                          Done!
+>>> Computing grade distribution...                        Done!
+>>> Computing average grade by period...                   Done!
+>>> Computing grade information...                         Done!
+============================== Done ==============================
 ```
 
-following this, the corresponding ``.png`` and ``.txt`` files will be generated and saved in the directory ``output`` automatically created in the directory where the ``Julia`` command was executed.
+following this, the corresponding ``.png`` and ``.txt`` files will be generated and saved in the directory ``output`` automatically created in the directory ``output`` where the ``Julia`` command was executed.
