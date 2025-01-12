@@ -144,8 +144,8 @@ end
 
 # Runs all the methods
 function run_all_methods!(ARGS; tend=false, deg=2)
-  print("\n==================== Grade Analyser ====================\n")
-  print(">>> Importing file from the user input...",)
+  print("\n========================= Grade Analyser =========================\n")
+  print(">>> Importing file from the user input...                 ",)
   data = assert_and_import_file_from_arg(ARGS)
   print(" Done!\n")
 
@@ -172,7 +172,7 @@ function run_all_methods!(ARGS; tend=false, deg=2)
     print(" Done!\n")
   end
 
-  print("========================= Done =========================\n")
+  print("============================== Done ==============================\n")
 end
 
-run_all_methods!(ARGS, tend=true, deg=4)
+run_all_methods!(ARGS, tend=true, deg=1)
