@@ -1,7 +1,6 @@
 
 # Computes the weighted mean
 function weighted_mean(data, weights)
-  @assert length(data) == length(weights)
   return dot(data, weights) / foldl(+, weights)
 end
 

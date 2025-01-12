@@ -150,12 +150,12 @@ function run_all_methods!(ARGS; tend=false, deg=2)
   print(" Done!\n")
 
   prints = [
-    ">>> Making sure that the data is in the correct format...",
-    ">>> Setting up the output folder...",
-    ">>> Computing grades by period...",
-    ">>> Computing grade distribution...",
-    ">>> Computing average grade by period...",
-    ">>> Computing grade information..."
+    ">>> Making sure that the data is in the correct format... ",
+    ">>> Setting up the output folder...                       ",
+    ">>> Computing grades by period...                         ",
+    ">>> Computing grade distribution...                       ",
+    ">>> Computing average grade by period...                  ",
+    ">>> Computing grade information...                        "
   ]
   methods = [
     () -> assert_data(data),
