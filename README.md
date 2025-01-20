@@ -9,7 +9,7 @@ By adding the user's information in a ``.jl`` file, just like ``example_data.jl`
 julia grade-analyzer.jl example_data.jl
 ```
 
-allows ``Julia`` to automatically generate all the plots and metrics, as demonstrated in the ``output`` folder.
+allows ``Julia`` to automatically generate all the plots and metrics in a folder called ``output``.
 
 ## Example Output
 
@@ -33,4 +33,4 @@ the output in the terminal will be:
 ============================== Done ==============================
 ```
 
-following this, the corresponding ``.png`` and ``.txt`` files will be generated and saved in the directory ``output`` automatically created in the directory ``output`` where the ``Julia`` command was executed.
+following this, the corresponding ``.png`` and ``.txt`` files will be generated and saved in the ``output`` folder automatically created in the directory where the ``Julia`` command was executed.

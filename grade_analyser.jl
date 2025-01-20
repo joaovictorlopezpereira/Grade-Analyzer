@@ -23,7 +23,7 @@ end
 # Verifies if any of the given data is missing
 function assert_data(data)
   for i in eachindex(data)
-    @assert length(data[i]) == 3 "The data on period $i is missing one of the 3 required information (names, grades, weight)."
+    @assert length(data[i]) == 3 "The data on period $i is missing one of the 3 required information (name, grade, weight)."
 
     @assert length(data[i][1]) == length(data[i][2]) && length(data[i][2]) == length(data[i][3]) "There's data missing on the period $i."
   end
