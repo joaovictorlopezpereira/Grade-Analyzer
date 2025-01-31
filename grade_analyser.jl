@@ -6,7 +6,8 @@ include("statistics.jl")
 # Asserts that the given file is in the correct format and returns the data
 function assert_and_import_file_from_arg(ARGS)
   if length(ARGS) == 0
-    println("The data file is missing from the function call.")
+    print("\nThe data file is missing from the function call!\n")
+    print("============================== Exit ==============================\n")
     exit(1)
   end
 
@@ -15,7 +16,8 @@ function assert_and_import_file_from_arg(ARGS)
   if isfile(name)
     return include(name)
   else
-    println("File '$name' not found.")
+    print("\nFile '$name' not found!\n")
+    print("============================== Exit ==============================\n")
     exit(1)
   end
 end
@@ -72,14 +74,9 @@ end
 
 # Plots the grade distribution by using a histogram
 function plot_grade_distribution!(data; b=100)
-  all_notes = Float64[]
+  notes, _, _ = get_notes_disciplines_weights(data)
 
-  for period_data in data
-    _, notes, _ = period_data
-    append!(all_notes, notes)
-  end
-
-  histogram(all_notes, bins=b, xlabel="Grades", ylabel="Frequency", title="Grades Distribution", legend=false, color=:blue, size=(800, 800))
+  histogram(notes, bins=b, xlabel="Grades", ylabel="Frequency", title="Grades Distribution", legend=false, color=:blue, size=(800, 800))
   savefig("output/grades_distribution.png")
 end
 
@@ -95,7 +92,7 @@ function plot_average_grade_by_period!(data; tendency=false, degree=2)
 
   plt = scatter(n, period_averages, xlabel="Period", ylabel="Average Grade", title="Average Grade by Period", legend=false, color=:blue)
 
-  for i in 1:length(period_averages)
+  for i in eachindex(period_averages)
     annotate!(plt, n[i], period_averages[i] + 0.05, text("s$i", 10, :center))
   end
 
@@ -110,36 +107,37 @@ end
 function write_in_file_grade_info!(data, output_file)
   output_file = "output/statistics_" * replace(output_file, r"\.jl$" => "") * ".txt"
 
-  all_notes = Float64[]
-  all_disciplines = String[]
-  all_weights = Float64[]
-
-  for period_data in data
-    disciplines, notes, weight = period_data
-    append!(all_notes, notes)
-    append!(all_disciplines, disciplines)
-    append!(all_weights, weight)
-  end
-
-  num_disciplines = length(all_disciplines)
-  avg_grade = weighted_mean(all_notes, all_weights)
-  median = median_custom(all_notes)
-  mode = sample_mode(all_notes)
-  w_std_dev = weighted_std_dev(all_notes, all_weights)
+  notes, disciplines, weights = get_notes_disciplines_weights(data)
 
   content = """
   +------------------------------+-----+
-  |       Number of disciplines: | $num_disciplines
-  |               Average grade: | $(round(avg_grade, digits=2))
-  |                      Median: | $(round(median, digits=2))
-  |                        Mode: | $(round(mode, digits=2))
-  | Weighted standard deviation: | $(round(w_std_dev, digits=2))
+  |       Number of disciplines: | $(length(disciplines))
+  |               Average grade: | $(round(weighted_mean(notes, weights), digits=2))
+  |                      Median: | $(round(median_custom(notes), digits=2))
+  |                        Mode: | $(round(sample_mode(notes), digits=2))
+  | Weighted standard deviation: | $(round(weighted_std_dev(notes, weights), digits=2))
   +------------------------------+-----+
   """
 
   open(output_file, "w") do file
     write(file, content)
   end
+end
+
+# Gets all notes, disciplines and weights from the data
+function get_notes_disciplines_weights(data)
+  notes = Float64[]
+  disciplines = String[]
+  weights = Float64[]
+
+  for period_data in data
+    d, n, w = period_data
+    append!(notes, n)
+    append!(disciplines, d)
+    append!(weights, w)
+  end
+
+  return notes, disciplines, weights
 end
 
 # Runs all the methods
