@@ -1,6 +1,5 @@
 using Plots
 using LinearAlgebra
-using BenchmarkTools
 include("statistics.jl")
 
 # Asserts that the given file is in the correct format and returns the data
